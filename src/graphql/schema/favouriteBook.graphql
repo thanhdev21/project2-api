@@ -1,0 +1,34 @@
+# import * from "./base.graphql"
+# import * from "./book.graphql"
+# import * from "./user.graphql"
+
+input CreateFavouriteBookInput {
+  bookId: ID!
+}
+input DeleteFavouriteBookInput {
+  bookId: ID!
+}
+input CheckIsFavouriteBookInput {
+  bookId: ID!
+}
+
+type FavouriteBook {
+  _id: ID!
+  favouriteBy: ID!
+  book: Book!
+}
+
+type FavouriteBooks {
+  items: [FavouriteBook!]
+  paginate: Paginate
+}
+
+type Mutation {
+  createFavouriteBook(input: CreateFavouriteBookInput!): Boolean
+  deleteFavouriteBook(input: DeleteFavouriteBookInput!): Boolean
+}
+
+type Query {
+  getAllFavouriteBooks(pageIndex: Int = 1, pageSize: Int = 20): FavouriteBooks
+  checkIsFavouriteBook(input: CheckIsFavouriteBookInput): Boolean
+}

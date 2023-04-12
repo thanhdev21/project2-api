@@ -1,0 +1,48 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+# import * from "./media.graphql"
+# import * from "./category.graphql"
+# import * from "./book.graphql"
+
+type Mutation {
+  createFeature(input: CreateFeatureInput!): Feature!
+  updateFeature(id: ID!, input: UpdateFeatureInput!): Feature!
+  deleteFeature(id: ID!): Boolean
+}
+
+type Query {
+  getAllFeatures: [Feature!]!
+  getFeature(id: ID!): Feature!
+}
+
+type Feature {
+  _id: ID!
+  title: String!
+  description: String!
+  createdAt: Date
+  updatedAt: Date
+  coverPhoto: Media
+  deletedAt: Date
+  books: [Book]
+  amountBooks: Int
+  link: String
+  type: FeatureType
+}
+
+input CreateFeatureInput {
+  title: String!
+  description: String!
+  coverPhoto: String
+  link: String
+  type: FeatureType
+  books: [String]
+}
+
+input UpdateFeatureInput {
+  title: String!
+  description: String!
+  coverPhoto: String
+  link: String
+  type: FeatureType
+  books: [String]
+}

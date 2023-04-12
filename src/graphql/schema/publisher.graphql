@@ -1,0 +1,50 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+# import * from "./media.graphql"
+
+type Mutation {
+  createPublisher(input: CreatePublisherInput!): Publisher!
+  updatePublisher(id: ID, input: UpdatePublisherInput!): Publisher!
+  deletePublisher(id: ID!): Boolean
+}
+
+type Query {
+  getAllPublishers(pageSize: Int = 20, pageIndex: Int = 1, search: String): Publishers!
+  getPublisher(id: ID!): Publisher!
+}
+
+type Publisher {
+  _id: ID!
+  name: String!
+  description: String!
+  registedDate: Date!
+  logo: Media!
+  numberOfWork: Int
+  address: String!
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+}
+
+type Publishers {
+  items: [Publisher!]!
+  paginate: Paginate
+}
+
+input CreatePublisherInput {
+  name: String!
+  description: String!
+  registedDate: Date!
+  numberOfWork: Int
+  address: String
+  logo: ID!
+}
+
+input UpdatePublisherInput {
+  name: String!
+  description: String!
+  registedDate: Date!
+  numberOfWork: Int
+  address: String
+  logo: ID!
+}

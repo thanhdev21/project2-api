@@ -1,0 +1,76 @@
+directive @auth(requires: [RoleCodes] = []) on OBJECT | FIELD_DEFINITION
+
+scalar Date
+scalar Upload
+scalar Mockup
+
+type Paginate {
+  pageIndex: Int
+  totalPage: Int
+  pageSize: Int!
+  totalItems: Int
+}
+
+type View {
+  _id: ID!
+  bookId: ID!
+  viewAt: Date!
+}
+enum Order {
+  ASC
+  DESC
+}
+
+enum RoleCodes {
+  ADMIN
+  USER
+  CONTENT_CREATOR
+}
+
+enum ErrorCodes {
+  GRAPHQL_PARSE_FAILED
+  GRAPHQL_VALIDATION_FAILED
+  UNAUTHENTICATED
+  FORBIDDEN
+  BAD_USER_INPUT
+  INTERNAL_SERVER_ERROR
+  OTP_EXPIRE
+  TOKEN_EXPIRE
+  ACCOUNT_HAS_BEEN_INTACTIVE
+  NOT_FOUND
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+  PDF
+  OTHER
+}
+
+enum MediaStatus {
+  FAILED
+  PROCESSING
+  READY
+}
+
+enum BookType {
+  BOOK
+  STORY
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum FeatureType {
+  ALBUM
+  LINK
+  HOT_BOOK
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}

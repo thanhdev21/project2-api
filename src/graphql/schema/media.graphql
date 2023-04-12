@@ -1,0 +1,55 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+
+type Mutation {
+  uploadMedia(file: Upload!): Media!
+  updateMedia(id: ID!, data: UpdateMediaInput!): Media!
+}
+
+type Query {
+  getAllMedia(pageSize: Int = 20, pageIndex: Int = 1, filter: MediaFilterInput): Medias!
+  getMedia(id: ID!): Media!
+}
+
+type Medias {
+  items: [Media!]!
+  paginate: Paginate
+}
+
+type Media {
+  _id: ID!
+  fileName: String!
+  size: Int
+
+  title: String
+
+  description: String
+
+  type: MediaType!
+  fileType: String
+  createdBy: User!
+
+  status: MediaStatus!
+  path: String!
+  originUrl: String
+
+  createdAt: Date!
+  updatedAt: Date
+  deletedAt: Date
+}
+
+type BaseMedia {
+  url: String!
+  width: Int!
+  height: Int!
+}
+
+input MediaFilterInput {
+  query: String
+  type: MediaType
+}
+
+input UpdateMediaInput {
+  title: String
+  description: String
+}

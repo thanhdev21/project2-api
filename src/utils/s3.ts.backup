@@ -1,0 +1,89 @@
+import AWS from 'aws-sdk';
+import { uuid } from 'uuid';
+import { reduceImageBuffer } from './image';
+
+import path from 'path';
+import { MediaType } from '@graphql/types/generated-graphql-types';
+
+export function uploadToS3(root: string, file: Buffer): Promise<string> {
+  return new Promise(async (resolve) => {
+    const reducedBuffer = await reduceImageBuffer(file);
+    const s3bucket = new AWS.S3({
+      accessKeyId: process.env.IAM_USER_KEY,
+      secretAccessKey: process.env.IAM_USER_SECRET,
+    });
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: `${root}/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/${new Date().getTime()}-${uuid()}.jpg`,
+      Body: reducedBuffer,
+      ACL: 'public-read',
+    };
+    s3bucket.upload(params, (err, data) => {
+      if (err) {
+        console.error(err);
+        return resolve(null);
+      }
+      return resolve(data.Location);
+    });
+  });
+}
+
+export interface S3Info {
+  isS3: boolean;
+  uri: string;
+  info?: {
+    bucket: string;
+    path: string;
+    search: string;
+    file: string;
+    dir: string;
+  };
+}
+
+export function processS3Uri(media: Media): S3Info {
+  if (media.type === MediaType.Photo && media.uri && ((media.uri.startsWith('http://') && media.uri.length > 7) || (media.uri.startsWith('https://') && media.uri.length > 8))) {
+    const url = new URL(media.uri);
+    if (!url.host.endsWith('.amazonaws.com') || url.host.indexOf('.s3') === -1) {
+      return {
+        isS3: false,
+        uri: media.uri,
+      };
+    }
+
+    const file = path.basename(url.pathname); //'image.jpg'
+    const dir = path.dirname(url.pathname);
+
+    return {
+      isS3: true,
+      uri: media.uri,
+      info: {
+        bucket: url.host.substr(0, url.host.indexOf('.')),
+        path: url.pathname, // '/5e0355210aeb30120aec364a/2019/12/25/1577276746223-71de01eb-b205-479a-a14e-36abc047cbbf.jpg'
+        file,
+        dir, // '/5e0355210aeb30120aec364a/2019/12/25'
+        search: url.search,
+      },
+    };
+  }
+
+  return {
+    isS3: false,
+    uri: media.uri,
+  };
+}
+
+export function processS3UriAndThumbnails(s3Info: S3Info): { uri: string; thumbnail: string; thumbnail2x: string } {
+  if (s3Info.info.bucket === process.env.AWS_S3_BUCKET_NAME) {
+    return {
+      uri: `${process.env.IMAGES_DOMAIN}${s3Info.info.path}`,
+      thumbnail: `${process.env.IMAGES_DOMAIN}${s3Info.info.dir}/resized/small/${s3Info.info.file}`,
+      thumbnail2x: `${process.env.IMAGES_DOMAIN}${s3Info.info.dir}/resized/medium/${s3Info.info.file}`,
+    };
+  } else {
+    return {
+      uri: s3Info.uri,
+      thumbnail: s3Info.uri,
+      thumbnail2x: s3Info.uri,
+    };
+  }
+}

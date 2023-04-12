@@ -1,0 +1,38 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+# import * from "./media.graphql"
+
+type Mutation {
+  createCategory(input: CreateCategoryInput!): Category!
+  updateCategory(id: ID, input: UpdateCategoryInput!): Category!
+  deleteCategory(id: ID!): Boolean
+}
+
+type Query {
+  getAllCategories(pageSize: Int = 20, pageIndex: Int = 1, search: String): Categories!
+  getCategory(id: ID!): Category!
+}
+
+type Category {
+  _id: ID!
+  name: String!
+  description: String!
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+}
+
+type Categories {
+  items: [Category!]!
+  paginate: Paginate
+}
+
+input CreateCategoryInput {
+  name: String!
+  description: String!
+}
+
+input UpdateCategoryInput {
+  name: String!
+  description: String
+}

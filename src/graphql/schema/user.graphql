@@ -1,0 +1,45 @@
+# import * from "./base.graphql"
+# import * from "./notification.graphql"
+type Mutation {
+  updateUserStatus(id: ID!, input: UpdateUserStatusInput!): User!
+}
+
+type Query {
+  getAllUsers(pageIndex: Int = 1, pageSize: Int = 20, search: String, filter: UserFilter): Users!
+  getUser(id: ID!): User!
+}
+
+type User {
+  _id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  isConfirmed: Boolean!
+  confirmOTP: String
+  status: UserStatus!
+  otpExpireAt: Int
+  role: Int!
+  deletedAt: Date
+  createdAt: Date
+  updatedAt: Date
+  subscribedFirebaseTokens: [String!]
+  """
+  Notification
+  """
+  totalReadNotifications: Int
+  unreadSystemNoticeIds: [ID!]
+  haveNewMessage: Boolean
+  unsubscribeNotificationTypes: [NotificationType!]
+}
+type Users {
+  items: [User!]!
+  paginate: Paginate
+}
+
+input UpdateUserStatusInput {
+  status: UserStatus!
+}
+
+input UserFilter {
+  status: UserStatus
+}

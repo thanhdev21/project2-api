@@ -1,0 +1,93 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+# import * from "./media.graphql"
+# import * from "./category.graphql"
+
+type Mutation {
+  createBook(input: CreateBookInput!): Book!
+  updateBook(id: ID!, input: UpdateBookInput!): Book!
+  deleteBook(id: ID!): Boolean
+  views(bookId: ID!): Boolean
+}
+
+type Query {
+  getAllBooks(pageIndex: Int = 1, pageSize: Int = 20, search: String, filter: BookFilter): Books!
+  getBook(id: ID!): Book!
+  getBookByRank(pageIndex: Int = 1, pageSize: Int = 100, search: String, filter: RankFilter): Books!
+  getNewBookList(pageIndex: Int = 1, pageSize: Int = 20, search: String, filter: BookFilter): Books!
+}
+
+type Subscription {
+  hello: String
+  onCommented(bookId: ID!): Boolean
+  onViewed(bookId: ID!): Book!
+}
+
+type Book {
+  _id: ID!
+  title: String!
+  description: String!
+  isbn: String!
+  uploadedBy: User!
+  createdAt: Date
+  updatedAt: Date
+  coverPhoto: Media
+  author: String!
+  categories: [Category!]
+  deletedAt: Date
+  relatedBooks: [Book]
+  content: Media!
+  price: Int
+  releasedDate: Date
+  bookType: BookType!
+  views: Int
+}
+
+type Books {
+  items: [Book!]!
+  paginate: Paginate
+}
+
+input CreateBookInput {
+  title: String!
+  description: String!
+  isbn: String!
+  coverPhoto: ID
+  author: String!
+  categories: [String!]
+  price: Int!
+  releasedDate: Date!
+  content: ID!
+  bookType: BookType!
+}
+
+input UpdateBookInput {
+  title: String!
+  description: String!
+  isbn: String!
+  coverPhoto: ID
+  author: String!
+  categories: [String!]
+  price: Int!
+  releasedDate: Date!
+  content: ID!
+  bookType: BookType!
+}
+
+input BookFilter {
+  categories: [String]
+  uploadedBy: String
+  bookType: BookType
+}
+
+input RankFilter {
+  bookType: BookType
+  period: Period
+}
+
+enum Period {
+  DAY
+  WEEK
+  MONTH
+  ALL
+}

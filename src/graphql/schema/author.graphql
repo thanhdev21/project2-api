@@ -1,0 +1,48 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+# import * from "./media.graphql"
+# import * from "./book.graphql"
+
+type Mutation {
+  createAuthor(input: CreateAuthorInput!): Author!
+  updateAuthor(id: ID, input: UpdateAuthorInput!): Author!
+  deleteAuthor(id: ID!): Boolean
+}
+
+type Query {
+  getAllAuthors(pageSize: Int = 20, pageIndex: Int = 1, search: String): Authors!
+  getAuthor(id: ID!): Author!
+}
+
+type Author {
+  _id: ID!
+  name: String!
+  dateOfBirth: Date
+  gender: Gender!
+  description: String
+  likeCount: Int
+  compositionCount: Int
+  deletedAt: Date
+  avatar: Media
+}
+
+type Authors {
+  items: [Author!]!
+  paginate: Paginate
+}
+
+input CreateAuthorInput {
+  name: String!
+  dateOfBirth: Date
+  gender: Gender!
+  description: String
+  avatar: ID!
+}
+
+input UpdateAuthorInput {
+  name: String!
+  dateOfBirth: Date
+  gender: Gender!
+  description: String
+  avatar: ID!
+}

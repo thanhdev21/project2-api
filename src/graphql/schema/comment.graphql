@@ -1,0 +1,54 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+
+type Query {
+  getComment(_id: ID!): Comment
+  getChildComments(parentId: ID!, limit: Int!, after: ID): Comments
+  getComments(bookId: ID!, limit: Int!, after: ID): Comments
+}
+
+type Mutation {
+  createComment(data: CommentInput!): Comment
+  updateComment(_id: ID!, data: UpdateCommentInput!): Comment
+  deleteComment(_id: ID!): Boolean
+  hideComment(_id: ID!): Boolean
+  unhideComment(_id: ID!): Boolean
+}
+
+type Subscription {
+  onCommentCreated(bookId: ID!): Comment
+  onChildCommentCreated(parentId: ID!): Comment
+  onCommentUpdated(bookId: ID!): Comment
+  onChildCommentUpdated(parentId: ID!): Comment
+  onCommentDeleted(bookId: ID!): Comment
+  onChildCommentDeleted(parentId: ID!): Comment
+}
+
+type Comment {
+  _id: ID!
+  bookId: ID!
+  parentId: ID
+  totalReplies: Int
+  childComments(limit: Int!, after: ID): Comments!
+  content: String
+  createdBy: User!
+  hidden: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  deletedAt: Date
+}
+
+input CommentInput {
+  bookId: ID!
+  content: String
+  parentId: ID
+}
+
+input UpdateCommentInput {
+  content: String
+}
+
+type Comments {
+  items: [Comment!]!
+  paginate: Paginate
+}

@@ -1,0 +1,71 @@
+# import * from "./base.graphql"
+# import * from "./user.graphql"
+# import * from "./comment.graphql"
+type Query {
+  getNotificationTypes: [NotificationType!]
+  getSystemNotifications: [Notification!]
+  getMyNotifications(pageSize: Int!, pageIndex: Int, excludeIds: [ID!]): Notifications!
+  getMyTotalUnreadNotifications: Int!
+}
+
+type Mutation {
+  subscribeFirebaseMessaging(token: String!): Boolean!
+  unsubscribeFirebaseMessaging(token: String!): Boolean!
+  createSystemNotification(data: SystemNotificationInput!): Notification
+  updateSystemNotification(_id: ID!, data: SystemNotificationInput!): Notification
+  deleteSystemNotification(_id: ID!): Boolean!
+  sendSystemNotification(_id: ID!): Boolean!
+  deleteMyNotification(_id: ID, all: Boolean): Boolean!
+  resetMyTotalNotificationUnread: Boolean!
+  markNotificationAsRead(_id: ID!, type: NotificationType!): Boolean!
+}
+
+type Subscription {
+  onReceivedUserNotification: Notification
+}
+
+type Notification {
+  _id: ID!
+  fromUserId: ID
+  fromUser: User
+  toUserId: ID
+  toUser: User
+  forBookId: ID
+  formattedMessage: String
+  forCommentId: ID
+  forComment: Comment
+  totalUnreadMessage: Int
+  read: Boolean
+  type: NotificationType!
+  variables: String
+  sendToAllUsers: Boolean
+  systemNotificationTo: SystemNotificationTo
+  excludedUserIds: [ID!]
+  customMessage: String
+  sent: Boolean
+  sentAt: Date
+  createdAt: Date!
+  updatedAt: Date!
+  deletedAt: Date
+}
+
+type Notifications {
+  items: [Notification!]!
+  paginate: Paginate
+}
+
+input SystemNotificationInput {
+  customMessage: String!
+  systemNotificationTo: SystemNotificationTo!
+  excludedUserIds: [ID!]
+}
+
+enum SystemNotificationTo {
+  USER
+}
+
+enum NotificationType {
+  ADDED_COMMENT
+  REPLIED_COMMENT
+  SYSTEM
+}
